@@ -1,0 +1,105 @@
+.tab-pane {
+    border: 1px solid #ccc;
+    border-top: none;
+    padding: 5px;
+}
+
+.dataTable tr:hover td {
+    background-color: lightyellow;
+}
+
+#mediaModal .modal-body {
+    max-height: 600px;
+    overflow: auto;
+}
+
+#mediaModal .modal-body .thumbnail {
+    float: left;
+    width: 85px;
+    height: 90px;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    background-color: #f4f4f4;
+    cursor: pointer;
+    text-align: center
+}
+
+#mediaModal .modal-body .thumbnail img {
+    width: 100%;
+}
+
+#mediaModal .modal-body .thumbnail .tools {
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+}
+
+#mediaModal .modal-body .thumbnail.active {
+    border: 1px solid rgba(88, 88, 88, 0.53);
+    box-shadow: 0px 0px 5px 1px;
+}
+
+#mediaModal .modal-body .thumbnail_upload {
+    float: left;
+    width: 85px;
+    height: 90px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    background-color: #f4f4f4;
+    text-align: center
+}
+
+#mediaModal .modal-footer .alert {
+    margin-bottom: 0px;
+}
+
+#frm-edit-user .twitter-typeahead {
+    width: 100% !important;
+}
+
+.dataTable .sorting1 {
+    cursor: pointer;
+}
+
+.sorting1 i.fa {
+    padding-left: 15px;
+}
+
+#mediaModal .w-multi-img {
+    padding: 15px 10px;
+    max-height: 500px;
+    overflow: auto;
+}
+
+.form-news #preview-image {
+    width: 100px;
+    max-height: 100px;
+}
+
+#mediaModal .w-pre-img {
+    background: rgba(202, 202, 202, 0.1);
+    padding-top: 15px;
+}
+
+#mediaModal .w-detail-img > form {
+    margin-top: 15px;
+}
+
+#mediaModal .w-detail-img > form .control-label {
+    font-weight: 200;
+    font-size: 0.898em;
+}
+
+#mediaModal .preview-img {
+    min-width: 100%;
+    max-height: 127px;
+    height: 127px;
+    text-align: center;
+    overflow: hidden;
+}
+
+#mediaModal .preview-img > img {
+    height: 100%;
+}
