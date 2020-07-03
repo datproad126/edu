@@ -21,11 +21,14 @@ services:
     networks:
       - app-network
 
-  #Nginx Service
+  #Nginx Service with nodejs 
   webserver:
-    image: nginx:latest
+    build: 
+      context: .
+      dockerfile: ./nginx/dockerfile
+    image: my/webserver
     container_name: webserver
-    restart: always
+    restart: unless-stopped
     tty: true
     ports:
       - "80:80"
