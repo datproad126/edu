@@ -1,7 +1,7 @@
 FROM php:7.4-fpm
 
 # Copy composer.lock and composer.json
-COPY ./edut-core/composer.lock ./edut-core/composer.json /var/www/
+COPY ./laravel/composer.lock ./laravel/composer.json /var/www/
 
 # Set working directory
 WORKDIR /var/www
@@ -33,11 +33,7 @@ RUN apt-get update -y && apt-get install -y \
     && chmod +x /usr/local/bin/wkhtmltopdf \
     && wget https://github.com/h4cc/wkhtmltoimage-amd64/blob/master/bin/wkhtmltoimage-amd64?raw=true -O /usr/local/bin/wkhtmltoimage \
     && chmod +x /usr/local/bin/wkhtmltoimage \
-    && wget https://www.pdflib.com/binaries/PDFlib/920/PDFlib-9.2.0p5-Linux-x86_64-php.tar.gz -O /usr/local/src/PDFlib-9.2.0p5-Linux-x86_64-php.tar.gz \
-    && cd /usr/local/src \
-    && tar -xvf PDFlib-9.2.0p5-Linux-x86_64-php.tar.gz \
-    && cp -R /usr/local/src/PDFlib-9.2.0p5-Linux-x86_64-php/bind/php/php-740/php_pdflib.so /usr/local/lib/php/extensions/no-debug-non-zts-20190902/ \
-    && cd /
+    && wget https://www.pdflib.com/binaries/PDFlib/920/PDFlib-9.2.0p5-Linux-x86_64-php.tar.gz -O /usr/local/src/PDFlib-9.2.0p5-Linux-x86_64-php.tar.gz
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -50,7 +46,6 @@ RUN docker-php-ext-configure gd \
     --with-jpeg=/usr/include/
 
 RUN docker-php-ext-install gd 
-RUN rm -r /usr/local/src/PDFlib-9.2.0p5-Linux-x86_64-php.tar.gz
 #/tmp/php_pdflib.so
 
 # Install composer
