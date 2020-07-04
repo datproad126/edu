@@ -28,16 +28,14 @@ services:
       dockerfile: ./nginx/dockerfile
     image: my/webserver
     container_name: webserver
-    restart: unless-stopped
+    restart: always
     tty: true
-    volumes: 
-        - ./server:/home/node
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./laravel:/var/www #change
-      - ./server:/var/www/server
+      - ./server:/home/node
       - ./nginx/config/:/etc/nginx/conf.d/
     networks:
       - app-network

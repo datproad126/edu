@@ -5,6 +5,7 @@ ENV NODE_VERSION 14.5.0
 RUN set -x ; \
   addgroup -g 1000 -S node ; \
   adduser -u 1000 -D -S -G node node \
+    && apk update && apk add bash \
     && apk add --no-cache \
         libstdc++ \
     && apk add --no-cache --virtual .build-deps \
@@ -73,7 +74,7 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
 # [end] node:10.9-alpine
 # --
 
-RUN mkdir -p /home/node/server/node_modules && chown -R node:node /home/node/server
+RUN mkdir -p /home/node/server/node_modules && chown -R node:node /home/node
 
 WORKDIR /home/node/server
 
@@ -84,9 +85,8 @@ USER node
 # From now on we have both nginx and node (+ yarn) available
 RUN ls -la
 RUN rm -rf node_modules
-RUN yarn install
+RUN yarn
 RUN yarn cache clean
-RUN yarn dev
 
 # And we end our Dockerfile with nginx Dockerfile last instructions
 
