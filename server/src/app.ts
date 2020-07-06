@@ -39,10 +39,15 @@ class App {
 }
 
   public listen(): void {
-    this.expressServer = http.createServer(this.app);
-    this.expressServer.listen(this.port, () => {
-      console.log('Server is listening on port ' + String(this.port) + '!');
-    })
+    try {
+      this.expressServer = http.createServer(this.app);
+      this.expressServer.listen(this.port, () => {
+        console.log('Server is listening on port ' + String(this.port) + '!');
+      })
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 }
 
