@@ -1,8 +1,23 @@
 import App from "./app";
-import Routes from "./routes/index";
+import * as bodyParser from 'body-parser'
 
-const app = new App(4002).getApp();
-const route = new Routes(app);
-route.getRoutes();
+// Middleware
+import loggerMiddleware from './middlewares/logger'
 
-export { App };
+// Controllers
+import PdfController from './controllers/pdf'
+
+
+const app = new App({
+   port: 4002,
+   controllers: [
+      new PdfController()
+   ],
+   middleWares: [
+      bodyParser.json(),
+      bodyParser.urlencoded({ extended: true }),
+      loggerMiddleware
+   ]
+})
+
+app.listen()
