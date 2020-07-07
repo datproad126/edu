@@ -23,11 +23,11 @@ services:
 
   #Nginx Service with nodejs 
   webserver:
-    build: 
-      context: .
-      dockerfile: ./nginx/dockerfile
-    image: my/webserver
-    container_name: webserver
+    # build: 
+    #   context: .
+    #   dockerfile: ./nginx/dockerfile
+    image: nginx:latest
+    # container_name: webserver
     restart: always
     tty: true
     ports:
@@ -35,11 +35,24 @@ services:
       - "443:443"
     volumes:
       - ./laravel:/var/www #change
-      - ./server:/home/node
+      # - ./server:/home/node
       - ./nginx/config/:/etc/nginx/conf.d/
     networks:
       - app-network
-
+  nodeserver:
+    build: 
+      context: .
+      dockerfile: ./node/dockerfile
+    image: my/node
+    container_name: nodeserver
+    restart: unless-stopped
+    ports: 
+      - "4002:4002"
+    volumes: 
+      - ./server:/usr/app
+      - /usr/app/node_modules 
+    networks: 
+      - app-network
   #MySQL Service
   db:
     image: mariadb
