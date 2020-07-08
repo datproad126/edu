@@ -1,6 +1,5 @@
 version: '3'
 services:
-
   #PHP Service
   app:
     build:
@@ -16,18 +15,13 @@ services:
     working_dir: /var/www
     volumes:
       - ./laravel:/var/www #change
-      - ./server:/var/www/server
       - ./PHP/config/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - app-network
 
   #Nginx Service with nodejs 
   webserver:
-    # build: 
-    #   context: .
-    #   dockerfile: ./nginx/dockerfile
     image: nginx:latest
-    # container_name: webserver
     restart: always
     tty: true
     ports:
@@ -35,7 +29,6 @@ services:
       - "443:443"
     volumes:
       - ./laravel:/var/www #change
-      # - ./server:/home/node
       - ./nginx/config/:/etc/nginx/conf.d/
     networks:
       - app-network
