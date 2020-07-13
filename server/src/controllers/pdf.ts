@@ -3,12 +3,11 @@ import { Request, Response } from 'express'
 import * as express from 'express'
 import IControllerBase from '../interfaces/IControllerBase.interface'
 import fetch from 'node-fetch'
-import multer from 'multer'
-import fs from 'fs'
 import path, { join } from 'path'
-import { type } from 'os'
-const pdfToText = require('pdf-to-text')
+// import multer from 'multer'
+// import fs from 'fs'
 
+const pdfToText = require('pdf-to-text')
 
 class PdfController implements IControllerBase {
   public path = '/api/v1/pdf/'
@@ -22,30 +21,35 @@ class PdfController implements IControllerBase {
   }
 
   public initRoutes() {
-    this.storage = multer.diskStorage({
-      destination: (req: Request, _file: any, cb: any) => {
-        try {
-          cb(null, path.join(__dirname, '../../storage/uploads/'));
-        } catch (error) {
-          console.log(error);
-        }
-      },
-      filename: (_req: Request, file: any, cb: any) => {
-        const uniqueSuffix = new Date().toISOString().replace(/[\/\\:]/g, "_") + file.originalname
-        cb(null, uniqueSuffix)
-      }
-    })
-    this.upload = multer({
-      storage: this.storage,
-      limits: { fileSize: 1000000 }
-      // dest: '/storage/uploads/'
-    })
+    // this.storage = multer.diskStorage({
+    //   destination: (req: Request, _file: any, cb: any) => {
+    //     try {
+    //       cb(null, path.join(__dirname, '../../storage/uploads/'));
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    //   },
+    //   filename: (_req: Request, file: any, cb: any) => {
+    //     const uniqueSuffix = new Date().toISOString().replace(/[\/\\:]/g, "_") + file.originalname
+    //     cb(null, file.fieldname + uniqueSuffix)
+    //   }
+    // })
 
-    this.router.post(this.path + 'override-pdf', this.overridePdf)
-    this.router.post(this.path + 'get-text', this.upload.single('pdf'), this.getText)
+    // this.upload = multer({
+    //   storage: this.storage,
+    //   limits: { fileSize: 1000000 }
+    // })
+
+    // need upload file
+    // this.router.post(this.path + 'override-pdf', this.upload.single('pdf'), this.overrideTextInPdf)
+    // this.router.post(this.path + 'get-text', this.upload.single('pdf'), this.getSessionInPdf)
+
+    // file exist in system
+    this.router.post(this.path + 'override-pdf', this.overrideTextInPdf)
+    this.router.post(this.path + 'get-text', this.getSessionInPdf)
   }
 
-  public overridePdf = async (req: Request, res: Response, next: any): Promise<any> => {
+  public overrideTextInPdf = async (req: Request, res: Response, next: any): Promise<any> => {
     try {
       console.log(req.body);
       if (req.body.session === "")
@@ -65,6 +69,8 @@ class PdfController implements IControllerBase {
       const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
 
       this.pages = pdfDoc.getPages()
+
+      // overriding all page with custom css
       // this.pages.forEach((element: any) => {
       //   element.drawText(req.body.session, {
       //     x: 5,
@@ -74,13 +80,15 @@ class PdfController implements IControllerBase {
       //     color: rgb(1, 1, 1)
       //   })
       // });
+
+      // overriding ramdom page with custom css
       const randomPage = this.pages[45]
       randomPage.drawText(req.body.session, {
         x: 5,
         y: 100,
         size: 18,
         font: helveticaFont,
-        color: rgb(0, 1, 1)
+        color: rgb(1, 1, 1)
       });
       const pdfBytes = await pdfDoc.saveAsBase64();
       const getEncodePDF = (encodedPDF: string) => {
@@ -98,37 +106,61 @@ class PdfController implements IControllerBase {
     }
   }
 
-  public getText = async (req: Request, res: Response, next: any): Promise<any> => {
+  public getSessionInPdf = async (req: Request, res: Response, next: any): Promise<any> => {
     try {
-      // console.log(req.file);
-      // console.log(req.body.session);
-      if (!req.file) {
-        res.status(400).send({
-          status: 'fail',
-          message: 'file is not found'
-        })
-      }
-      else if (!req.body.session) {
+      // if (!req.file) {
+      //   res.status(400).send({
+      //     status: 'fail',
+      //     message: 'file is not found'
+      //   })
+      // }
+      // else if (!req.body.session) {
+      //   res.status(400).send({
+      //     status: 'fail',
+      //     message: 'session is not found'
+      //   })
+      // }
+
+      if (!req.body.session) {
         res.status(400).send({
           status: 'fail',
           message: 'session is not found'
         })
       }
-      const foundsession = {}
-      // install poppler-until
-      pdfToText.info(req.file.path, (err: any, info: any) => {
-        if (err) throw (err);
-        for (let index = 1; index <= info.pages; index++) {
-          const option = { from: index, to: index }
 
-          pdfToText.pdfToText(req.file.path, option, (err: any, data: any) => {
-            if (err) throw (err);
+      // install poppler-until
+      const message = {
+        text: [] as Array<number>,
+        pages: 0,
+        message: 'finding text is successfully !!',
+        date: new Date().toLocaleDateString(),
+      }
+
+      message.pages = await new Promise((resolve: any, reject: any) => {
+        pdfToText.info(path.join(__dirname, '../../storage/uploads/example.pdf'), (err: any, info: any) => {
+          if (err) reject(err);
+          resolve(info.pages);
+        })
+      })
+
+      for (let index = 1; index <= message.pages; index++) {
+        const found: number = await new Promise((resolve: any, reject: any) => {
+          pdfToText.pdfToText(path.join(__dirname, '../../storage/uploads/example.pdf'), { from: index, to: index }, (err: any, data: any) => {
+            if (err) reject(err);
             if (data.includes(req.body.session)) {
-              console.log(index)
+              resolve(index)
             }
-          });
+            else resolve(0)
+          })
+        })
+        if (found != 0) {
+          message.text.push(found)
         }
-      });
+      }
+      // await fs.unlinkSync(req.file.path)
+      res.setHeader('Content/Type','application/json')
+      res.setHeader('Content/Type','x-www-form-urlencoded')  
+      res.status(200).send(JSON.stringify(message))
 
     } catch (error) {
       console.error(error);
