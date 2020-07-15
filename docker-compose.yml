@@ -14,21 +14,22 @@ services:
       SERVICE_TAGS: dev
     working_dir: /var/www
     volumes:
-      - ./laravel:/var/www #change
+      - ./CSE481-DE:/var/www #change
       - ./PHP/config/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - app-network
 
   #Nginx Service with nodejs 
-  webserver:
+  webserver: 
     image: nginx:latest
     restart: always
     tty: true
+    container_name: webserver
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./laravel:/var/www #change
+      - ./CSE481-DE:/var/www #change
       - ./nginx/config/:/etc/nginx/conf.d/
     networks:
       - app-network
@@ -42,7 +43,7 @@ services:
     ports: 
       - "4002:4002"
     volumes: 
-      - ./server:/usr/app
+      - ./server:/home/node/app
       - /usr/app/node_modules 
     networks: 
       - app-network
