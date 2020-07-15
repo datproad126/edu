@@ -158,9 +158,7 @@ class PdfController implements IControllerBase {
         }
       }
       // await fs.unlinkSync(req.file.path)
-      res.setHeader('Content/Type','application/json')
-      res.setHeader('Content/Type','x-www-form-urlencoded')  
-      res.status(200).send(JSON.stringify(message))
+      res.json(message)
 
     } catch (error) {
       console.error(error);
