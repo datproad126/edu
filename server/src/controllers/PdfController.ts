@@ -71,25 +71,26 @@ class PdfController implements IControllerBase {
       this.pages = pdfDoc.getPages()
 
       // overriding all page with custom css
-      // this.pages.forEach((element: any) => {
-      //   element.drawText(req.body.session, {
-      //     x: 5,
-      //     y: 100,
-      //     size: 18,
-      //     font: helveticaFont,
-      //     color: rgb(1, 1, 1)
-      //   })
-      // });
+      this.pages.forEach((element: any) => {
+        element.drawText(req.body.session, {
+          x: 5,
+          y: 100,
+          size: 18,
+          font: helveticaFont,
+          color: rgb(1, 1, 1)
+        })
+      });
 
       // overriding ramdom page with custom css
-      const randomPage = this.pages[45]
-      randomPage.drawText(req.body.session, {
-        x: 5,
-        y: 100,
-        size: 18,
-        font: helveticaFont,
-        color: rgb(1, 1, 1)
-      });
+      // const randomPage = this.pages[45]
+      // randomPage.drawText(req.body.session, {
+      //   x: 5,
+      //   y: 100,
+      //   size: 18,
+      //   font: helveticaFont,
+      //   color: rgb(1, 1, 1)
+      // });
+
       const pdfBytes = await pdfDoc.saveAsBase64();
       const getEncodePDF = (encodedPDF: string) => {
         res.writeHead(200, {
@@ -137,7 +138,7 @@ class PdfController implements IControllerBase {
       }
 
       message.pages = await new Promise((resolve: any, reject: any) => {
-        pdfToText.info(path.join(__dirname, '../../storage/uploads/example.pdf'), (err: any, info: any) => {
+        pdfToText.info(path.join(__dirname, '../../public/uploads/example.pdf'), (err: any, info: any) => {
           if (err) reject(err);
           resolve(info.pages);
         })
@@ -145,7 +146,7 @@ class PdfController implements IControllerBase {
 
       for (let index = 1; index <= message.pages; index++) {
         const found: number = await new Promise((resolve: any, reject: any) => {
-          pdfToText.pdfToText(path.join(__dirname, '../../storage/uploads/example.pdf'), { from: index, to: index }, (err: any, data: any) => {
+          pdfToText.pdfToText(path.join(__dirname, '../../public/uploads/example.pdf'), { from: index, to: index }, (err: any, data: any) => {
             if (err) reject(err);
             if (data.includes(req.body.session)) {
               resolve(index)
