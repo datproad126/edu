@@ -5,13 +5,15 @@ import * as bodyParser from 'body-parser'
 import loggerMiddleware from './middlewares/logger'
 
 // Controllers
-import PdfController from './controllers/pdf'
+import PdfController from './controllers/PdfController'
+import HomeController from './controllers/HomeController'
 
 
 const app = new App({
    port: 4002,
    controllers: [
-      new PdfController()
+      new PdfController(),
+      new HomeController()
    ],
    middleWares: [
       bodyParser.json(),
