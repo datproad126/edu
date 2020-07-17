@@ -138,7 +138,7 @@ class PdfController implements IControllerBase {
       }
 
       message.pages = await new Promise((resolve: any, reject: any) => {
-        pdfToText.info(path.join(__dirname, '../../public/uploads/example.pdf'), (err: any, info: any) => {
+        pdfToText.info(path.join(__dirname, '../public/uploads/example.pdf'), (err: any, info: any) => {
           if (err) reject(err);
           resolve(info.pages);
         })
@@ -146,7 +146,7 @@ class PdfController implements IControllerBase {
 
       for (let index = 1; index <= message.pages; index++) {
         const found: number = await new Promise((resolve: any, reject: any) => {
-          pdfToText.pdfToText(path.join(__dirname, '../../public/uploads/example.pdf'), { from: index, to: index }, (err: any, data: any) => {
+          pdfToText.pdfToText(path.join(__dirname, '../public/uploads/example.pdf'), { from: index, to: index }, (err: any, data: any) => {
             if (err) reject(err);
             if (data.includes(req.body.session)) {
               resolve(index)
